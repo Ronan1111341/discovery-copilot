@@ -35,7 +35,8 @@ F.intro={
     keyH=e=>{if(e.key==="Escape")F.intro.end(true)};document.addEventListener("keydown",keyH);
     F.$("#skip2").onclick=()=>F.intro.end(true);F.$("#skip2").focus({preventScroll:true});
     requestAnimationFrame(()=>el&&el.classList.add("show"));
-    const {$}=F,S=ms=>F.sleep(ms);
+    const {$}=F,STOP={},S=async ms=>{await F.sleep(ms);if(!ok())throw STOP};
+    try{
     await Promise.race([document.fonts?document.fonts.ready:Promise.resolve(),new Promise(r=>setTimeout(r,1200))]);
     if(!ok())return;
     $("#imark").classList.add("on");$("#iwm").classList.add("on");await S(1100);if(!ok())return;
@@ -52,6 +53,7 @@ F.intro={
     begin(4);dt(4).textContent=steps[4][1];await S(1000);if(!ok())return;done(4);
     await S(500);$("#istage").classList.add("dim");$("#ifinal").classList.add("on");await S(1700);if(!ok())return;
     F.intro.end(false);
+    }catch(e){if(e!==STOP)throw e}
   }
 };
 })();

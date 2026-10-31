@@ -60,7 +60,7 @@ F.nguyenDiff={rows:["Budget","Bedrooms","Status","Finance","Next step","Lead sco
 function list(){
   $("#list").innerHTML=`<header><div class="eyebrow">Inbox</div><h2 style="margin-top:6px">Good morning, Sam</h2><p>${EMAILS.length} messages, sorted by AI</p></header>`+EMAILS.map(e=>{
     const chips=(e.tag[0]?`<span class="chip ${e.tag[1]}">${esc(e.tag[0])}</span>`:"")+(e.id===1&&F.state.ran?'<span class="chip good">Draft ready</span>':"");
-    return `<button class="row" role="option" aria-selected="${e.id===sel}" data-id="${e.id}" type="button"><span class="av" aria-hidden="true">${initials(e.from)}</span><span><span class="t"><b>${esc(e.from)}</b><span>${esc(e.time)}</span></span><span class="s">${esc(e.subject)}</span><span class="p">${esc(e.preview)}</span><span class="c">${chips}</span></span></button>`}).join("");
+    return `<button class="row" aria-current="${e.id===sel?"true":"false"}" data-id="${e.id}" type="button"><span class="av" aria-hidden="true">${initials(e.from)}</span><span><span class="t"><b>${esc(e.from)}</b><span>${esc(e.time)}</span></span><span class="s">${esc(e.subject)}</span><span class="p">${esc(e.preview)}</span><span class="c">${chips}</span></span></button>`}).join("");
   $$("#list .row").forEach(b=>b.onclick=()=>{sel=+b.dataset.id;F.closeDrawer();list();reader();$("#inbox").classList.add("reading")});
 }
 function reader(){
