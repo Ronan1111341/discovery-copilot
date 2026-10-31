@@ -8,3 +8,5 @@ A small demo of how I approach forward-deployed AI work: turn messy stakeholder 
 - **Live mode:** paste your own Anthropic API key to run Claude on your own notes. The key stays in your browser and is sent only to api.anthropic.com. Don't paste real client data.
 
 Single static `index.html`, no build step.
+
+© 2026 Ronan1111341. All rights reserved — published for viewing and evaluation; see LICENSE.
