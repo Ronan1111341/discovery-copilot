@@ -17,6 +17,9 @@ function build(){
 F.intro={
   init(){
     const q=new URLSearchParams(location.search);
+    F.$("#home")?.addEventListener("click",()=>{
+      if(F.RM){F.toast("The intro is off because your device is set to reduce motion.");return}
+      F.$(".tour-offer")?.remove();F.closeDrawer();F.go("email");F.intro.play()});
     F.$("#replayIntro")?.addEventListener("click",()=>{const dlg=F.$("#dlg");dlg.classList.remove("on");dlg.close();F.intro.play()});
     if(F.RM||q.get("intro")==="0"||seen()){setTimeout(()=>F.tour&&F.tour.offer(),1400);return}
     F.intro.play();
