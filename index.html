@@ -40,6 +40,7 @@
     <p>Foyer is a design concept for an AI workspace for luxury real estate agents. It is a show site: every animation is scripted on invented sample data. Nothing is read, searched, saved or sent, and no real client, property or portal data appears.</p>
     <p>Try the email demo first: an enquiry arrives, the assistant finds the earlier conversation, updates the client file and drafts a reply for the agent to approve.</p>
     <p>Built as a portfolio piece by Ronan1111341. <a href="https://github.com/Ronan1111341/discovery-copilot">Source on GitHub</a> · <a href="discovery.html">Earlier prototype: Discovery Copilot</a> (analyses interview notes with Claude, using your own API key).</p>
+    <p><button class="btn ghost sm" id="replayIntro" type="button">Replay the intro</button></p>
     <p style="font-size:13px">© 2026 Ronan1111341. All rights reserved.</p>
   </div>
 </dialog>
@@ -53,6 +54,7 @@
 <script src="js/reports.js"></script>
 <script src="js/rentals.js"></script>
 <script src="js/agents.js"></script>
-<script>F.initChrome();F.boot();</script>
+<script src="js/intro.js"></script>
+<script>F.initChrome();F.boot();F.intro.init();</script>
 </body>
 </html>
