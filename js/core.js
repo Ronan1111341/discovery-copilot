@@ -22,7 +22,8 @@ F.ICONS={
  report:'<path d="M5 20V4h10l4 4v12z"/><path d="M9 16v-3M12 16v-5M15 16v-2"/>'
 };
 let toastT;F.toast=m=>{const t=F.$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),3200)};
-F.type=async(el,txt,ms,ok)=>{if(F.RM){el.textContent=txt;return}el.classList.add("caret");for(let i=1;i<=txt.length;i++){if(!ok()){el.classList.remove("caret");return}el.textContent=txt.slice(0,i);await F.sleep(ms)}el.classList.remove("caret")};
+F.pace=1;F.tourHost=null;F.reset={};
+F.type=async(el,txt,ms,ok)=>{if(F.RM||ms<=0){el.textContent=txt;return}el.classList.add("caret");for(let i=1;i<=txt.length;i++){if(!ok()){el.classList.remove("caret");return}el.textContent=txt.slice(0,i);await F.sleep(ms)}el.classList.remove("caret")};
 F.count=(el,to,ms,ok,fmt=n=>Math.round(n).toLocaleString("en-AU"))=>new Promise(res=>{const t0=performance.now(),d=F.RM?0:ms;const f=now=>{if(!ok())return res();const p=d?Math.min(1,(now-t0)/d):1;el.textContent=fmt(p*to);p<1?requestAnimationFrame(f):res()};requestAnimationFrame(f)});
 F.hasDrawerFocus=()=>F.$("#drawer").classList.contains("open");
 
@@ -70,26 +71,28 @@ F.openDrawer=()=>{F.$("#drawer").classList.add("open");F.$(".main").classList.ad
 F.closeDrawer=()=>{F.token++;F.$("#drawer").classList.remove("open");F.$(".main").classList.remove("dr");if(F.onDrawerClose){const f=F.onDrawerClose;F.onDrawerClose=null;f()}};
 const setOpen=(st,open)=>{st.classList.toggle("open",open);st.querySelector("button").setAttribute("aria-expanded",String(open))};
 F.runDemo=async def=>{
-  const tk=++F.token,ok=()=>tk===F.token,live=F.$("#live");
-  F.$("#drTitle").textContent=def.title;
-  F.$("#drStages").innerHTML=def.stages.map((s,i)=>`<div class="stage" data-s="pending" data-i="${i}"><button type="button" aria-expanded="false"><span class="dot" aria-hidden="true"></span><span class="tt">${F.esc(s.title)}<span class="st">${F.esc(s.sub||"")}</span></span>${F.CHEV}</button><div class="sb"><div><div class="in">${s.html||""}</div></div></div></div>`).join("")+`<div class="done-note" id="drNote">${def.note||"<b>Done.</b> This was a scripted demo: nothing was searched, saved or sent."}</div>`;
-  F.$$("#drStages .stage>button").forEach(b=>b.onclick=()=>{const st=b.parentElement;if(st.dataset.s==="pending")return;setOpen(st,!st.classList.contains("open"))});
+  const tk=++F.token,ok=()=>tk===F.token,live=F.$("#live"),th=F.tourHost,host=th?th.el:F.$("#drStages"),P=()=>F.pace;
+  if(!th)F.$("#drTitle").textContent=def.title;
+  host.innerHTML=def.stages.map((s,i)=>`<div class="stage" data-s="pending" data-i="${i}"><button type="button" aria-expanded="false"><span class="dot" aria-hidden="true"></span><span class="tt">${F.esc(s.title)}<span class="st">${F.esc(s.sub||"")}</span></span>${F.CHEV}</button><div class="sb"><div><div class="in">${th&&s.explain?`<div class="explain"><b>What’s happening</b>${F.esc(s.explain)}</div>`:""}${s.html||""}</div></div></div></div>`).join("")+(th?"":`<div class="done-note" id="drNote">${def.note||"<b>Done.</b> This was a scripted demo: nothing was searched, saved or sent."}</div>`);
+  F.$$(".stage>button",host).forEach(b=>b.onclick=()=>{const st=b.parentElement;if(st.dataset.s==="pending")return;setOpen(st,!st.classList.contains("open"))});
   F.onDrawerClose=def.onClose||null;
-  F.openDrawer();
-  const ctx={ok,sleep:F.sleep,type:(el,t,ms)=>F.type(el,t,ms,ok),count:(el,to,ms,fmt)=>F.count(el,to,ms,ok,fmt),RM:F.RM};
-  const stages=F.$$("#drStages .stage");
-  await F.sleep(550);
+  if(!th)F.openDrawer();
+  const ctx={ok,sleep:ms=>F.sleep(ms*P()),type:(el,t,ms)=>F.type(el,t,ms*P(),ok),count:(el,to,ms,fmt)=>F.count(el,to,ms*P(),ok,fmt),RM:F.RM,get pace(){return P()}};
+  const stages=F.$$(".stage",host);
+  await F.sleep(550*P());
   for(let i=0;i<stages.length;i++){
     if(!ok())return;
     if(i>0)setOpen(stages[i-1],false);
-    stages[i].dataset.s="active";setOpen(stages[i],true);live.textContent=def.stages[i].title;await F.sleep(380);
+    stages[i].dataset.s="active";setOpen(stages[i],true);live.textContent=def.stages[i].title;await F.sleep(380*P());
     if(!ok())return;
     if(def.stages[i].run)await def.stages[i].run(F.$(".in",stages[i]),ctx);
     if(!ok())return;
+    if(th&&!F.RM&&def.stages[i].explain){const hold=Math.max(900,def.stages[i].explain.length*14);for(let t=0;t<hold&&ok()&&F.pace>0;t+=100)await new Promise(r=>setTimeout(r,100))}
+    if(!ok())return;
     stages[i].dataset.s="done";F.$(".dot",stages[i]).textContent="✓";
   }
-  F.$("#drNote").classList.add("on");live.textContent="Done.";
+  live.textContent="Done.";
   if(def.onDone)def.onDone();
-  F.$("#drStages").scrollTo({top:1e5,behavior:F.RM?"auto":"smooth"});
+  if(th){th.finish&&th.finish(def)}else{F.$("#drNote").classList.add("on");F.$("#drStages").scrollTo({top:1e5,behavior:F.RM?"auto":"smooth"})}
 };
 })();

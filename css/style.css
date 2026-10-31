@@ -431,3 +431,20 @@ dialog h3{font-size:34px}dialog a{color:var(--brass-2)}
 h1,h2,h3,h4,.brand b,.stat b,.tile b,.kpis b,.score b,.val,.scanrow b,.tart .num2,.rl .rt,.sale b,.sale .pr,.oh b,.ls b,.cl b,.final,.intro .wm,.intro .tag{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
 .tbody{min-height:330px}
 @media(max-width:720px){.tbody{min-height:0}}
+
+/* ---- tour v3: watch-it-work phase, peek bar, glowing tour button ---- */
+#tourBtn.glow{border-color:var(--brass);color:var(--brass-2);animation:glow 2s infinite}
+.tcard.watching .tart{height:70px}.tcard.watching .tart .num2{font-size:40px;bottom:6px}
+.tcard.watching .tbody{min-height:0}
+.thost{display:grid;gap:10px;margin:14px 0 4px}
+.thost .stage{background:rgba(255,255,255,.02)}
+.explain{border-left:2px solid var(--brass);padding:2px 0 2px 14px;margin:0 0 14px;font-size:13.5px;line-height:1.6;color:var(--ink)}
+.explain b{display:block;color:var(--brass);font:600 9.5px var(--body);letter-spacing:.18em;text-transform:uppercase;margin-bottom:3px}
+.trecap{margin:6px 0 10px;border:1px solid var(--brass);border-radius:8px;background:var(--brass-soft);padding:16px 18px;animation:up .6s var(--ease)}
+.trecap h4{font:600 10px var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin:0 0 6px}.trecap p{font-size:14.5px;line-height:1.6}
+.tcard .btn.pulse{animation:glow 2s infinite}
+.tpeek{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:352;display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--brass);border-radius:999px;padding:10px 12px 10px 22px;box-shadow:var(--shadow);max-width:calc(100vw - 24px);animation:up .5s var(--ease)}
+.tpeek span{font-size:13.5px;color:var(--ink-2)}.tpeek b{color:var(--brass-2);font-weight:600}
+.tour-bg.peek{background:rgba(3,6,10,.12);backdrop-filter:none;pointer-events:none}
+.tour-wrap.peek{visibility:hidden}
+@media(max-width:720px){.tpeek{flex-direction:column;border-radius:14px;padding:14px 16px;text-align:center;gap:10px;bottom:74px}}

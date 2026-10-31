@@ -36,13 +36,13 @@ function plan(){
   F.runDemo({title:"Plan my day",
    note:"<b>Done.</b> This was a scripted demo: nothing was scheduled or sent. A real version would add this plan to the agent’s calendar once approved.",
    stages:[
-   {title:"Reading your day",sub:"Tasks, open homes and follow-ups",
+   {title:"Reading your day",explain:"It gathers today’s tasks, open homes and clients.",sub:"Tasks, open homes and follow-ups",
     html:`<div class="ents">${[["Tasks",String(open.length)],["Open homes",String(oh.length)],["Clients",String(W.clients.filter(c=>c.agent===a.id).length)],["Top value",money(Math.max(...open.map(x=>x.value),0))]].map(x=>`<div class="ent"><b>${x[0]}</b>${x[1]}</div>`).join("")}</div>`,
     run:async(el,c)=>{for(const e of $$(".ent",el)){if(!c.ok())return;e.classList.add("on");await c.sleep(260)}await c.sleep(150)}},
-   {title:"Weighing what matters",sub:"Ranking by value and deadline",
+   {title:"Weighing what matters",explain:"It ranks work by expected value and deadline, so the biggest opportunities come first.",sub:"Ranking by value and deadline",
     html:`<div class="wbars">${top.map(x=>`<div class="wb"><span>${esc(x.text)}</span><span class="num">${money(x.value)}</span><div class="tr"><i data-w="${Math.round(x.value/maxv*100)}"></i></div></div>`).join("")}</div>`,
     run:async(el,c)=>{for(const w of $$(".wb",el)){if(!c.ok())return;w.classList.add("on");await c.sleep(90);$(".tr i",w).style.width=$(".tr i",w).dataset.w+"%";await c.sleep(300)}}},
-   {title:"Building the day",sub:"Highest value first, with breathing room",
+   {title:"Building the day",explain:"It lays the ranked work into a realistic timetable, with breathing room and time to prepare for the weekend’s open home.",sub:"Highest value first, with breathing room",
     html:`<div class="tline">${sched.map(s=>`<div class="tl"><span class="tm num">${mins(s.time)}</span><span>${esc(s.text)}<small>${esc(s.note)}</small></span></div>`).join("")}</div><div style="margin-top:14px"><button class="btn sm" type="button" data-t="Demo only: nothing was added to a calendar.">Add to my calendar</button></div>`,
     run:async(el,c)=>{$(".btn",el).onclick=e=>F.toast(e.currentTarget.dataset.t);for(const r of $$(".tl",el)){if(!c.ok())return;r.classList.add("on");await c.sleep(280)}}}
   ]});

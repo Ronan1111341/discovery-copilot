@@ -80,19 +80,19 @@ function run(){
    onDone:()=>{F.state.ran=true;F.state.flash=true;list();reader();$("#run").classList.remove("pulse")},
    note:"<b>Done.</b> This was a scripted demo: nothing was searched, saved or sent. In a real workflow you would review the draft before anything leaves your outbox.",
    stages:[
-   {title:"Reading the email",sub:"Pulling out names, property, budget and requests",
+   {title:"Reading the email",explain:"The assistant reads the message and pulls out the facts that matter: the property, the budget, the bedrooms, the parking and the request. In a real build this is structured extraction, with every fact tied back to the sentence it came from.",sub:"Pulling out names, property, budget and requests",
     html:`<div class="ents">${[["Property","14 Wickham Terrace"],["Budget","$1.1m"],["Bedrooms","3"],["Parking","Car space"],["Request","Inspect Sat 10am"]].map(x=>`<div class="ent"><b>${x[0]}</b>${x[1]}</div>`).join("")}</div>`,
     run:async(el,c)=>{const ents=$$(".ent",el),marks=$$("#body mark");for(let i=0;i<ents.length;i++){if(!c.ok())return;ents[i].classList.add("on");if(marks[i])marks[i].classList.add("on");await c.sleep(260)}await c.sleep(200)}},
-   {title:"Searching past emails",sub:"Looking for earlier conversations with this client",
+   {title:"Searching past emails",explain:"It looks through earlier conversations for the same person and the same property. A real system searches the mailbox and ranks matches by how closely they fit.",sub:"Looking for earlier conversations with this client",
     html:`<div class="prog"><i id="pbar"></i></div><div style="color:var(--ink-2);font-size:13px"><span class="num" id="scn">0</span> of 2,418 emails scanned</div>`,
     run:async(el,c)=>{const bar=$("#pbar",el),n=$("#scn",el),N=2418,t0=performance.now(),d=c.RM?0:1300;await new Promise(res=>{const f=now=>{if(!c.ok())return res();const p=d?Math.min(1,(now-t0)/d):1;bar.style.width=p*100+"%";n.textContent=Math.round(p*N).toLocaleString("en-AU");p<1?requestAnimationFrame(f):res()};requestAnimationFrame(f)})}},
-   {title:"Match found",sub:"Linking this email to an existing client",
+   {title:"Match found",explain:"It found the August enquiry and the broker’s pre-approval. Each match carries a confidence score, so the agent can see how sure the assistant is and why.",sub:"Linking this email to an existing client",
     html:`<div class="match"><div class="mh"><b>Jess Nguyen, 12 Aug</b><span class="chip good num">92% match</span></div><p>“Looking for a two-bedroom apartment, around $850k, one car space, near the river.”</p><div class="conf"><i data-w="92"></i></div></div><div class="match"><div class="mh"><b>Lena Brooks, yesterday</b><span class="chip good num">88% match</span></div><p>“Jess and Tom are now pre-approved up to $1.1m.”</p><div class="conf"><i data-w="88"></i></div></div>`,
     run:async(el,c)=>{for(const m of $$(".match",el)){if(!c.ok())return;m.classList.add("on");await c.sleep(100);const i=$(".conf i",m);i.style.width=i.dataset.w+"%";await c.sleep(480)}}},
-   {title:"Updating the client file",sub:"Changing only what the email says",
+   {title:"Updating the client file",explain:"It proposes only the changes the email supports: budget, bedrooms, status and next step. Each change shows the old and new value, and nothing is saved without approval.",sub:"Changing only what the email says",
     html:`<div class="diff">${F.nguyenDiff.rows.map(k=>`<span class="k">${k}</span><span class="v">${W.nguyen.before[k]===W.nguyen.after[k]?esc(W.nguyen.after[k]):`<s>${esc(W.nguyen.before[k])}</s><span class="new">${esc(W.nguyen.after[k])}</span>`}</span>`).join("")}</div>`,
     run:async(el,c)=>{for(const v of $$(".v",el)){if(!c.ok())return;v.classList.add("on");await c.sleep(300)}await c.sleep(200)}},
-   {title:"Drafting your reply",sub:"For you to review and send",
+   {title:"Drafting your reply",explain:"It writes a reply in the agent’s voice using what it now knows, such as the new budget and the Saturday request. The agent reviews, edits and sends it. The assistant never sends on its own.",sub:"For you to review and send",
     html:`<div class="draft"><div class="hd"><b>To:</b> Jess Nguyen<br><b>Subject:</b> Re: 14 Wickham Terrace, still available?</div><pre id="dtxt"></pre></div><div class="acts" id="acts"><button class="btn sm" type="button" data-t="Demo only: nothing was sent.">Approve and send</button><button class="btn ghost sm" type="button" data-t="Demo only: editing is not part of the show.">Edit</button><button class="btn ghost sm" type="button" data-t="Demo only: nothing was added to a calendar.">Add to calendar</button></div>`,
     run:async(el,c)=>{$$("#acts button",el).forEach(b=>b.onclick=()=>F.toast(b.dataset.t));await c.type($("#dtxt",el),DRAFT,7);if(!c.ok())return;$("#acts",el).classList.add("on")}}
   ]});
@@ -101,6 +101,7 @@ W.nguyen={
  before:{Budget:"$850,000",Bedrooms:"2",Parking:"1 car space",Suburbs:"Spring Hill, New Farm",Status:"Browsing",Finance:"Pre-approval pending","Next step":"Send new listings","Lead score":"61"},
  after:{Budget:"$1,100,000",Bedrooms:"3+",Parking:"1 car space",Suburbs:"Spring Hill, New Farm",Status:"Active buyer",Finance:"Pre-approved to $1.1m (Lena Brooks)","Next step":"Inspection Sat 10am, 14 Wickham Terrace","Lead score":"88"}
 };
+F.reset.email=()=>{F.state.ran=false;F.state.flash=false;list();reader()};
 F.register({id:"email",label:"AI Email",icon:"email",group:"Workspace",badge:"5",
  mount(el){el.innerHTML=`<div class="inbox" id="inbox"><div class="list" id="list"></div><div class="reader" id="reader"></div></div>`;list();reader()},
  show(){list();reader()}});
