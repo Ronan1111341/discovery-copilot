@@ -1,77 +1,119 @@
-/* Guided tour: a spotlight walks through each tool and points at the button that starts its demo. */
+/* Guided tour: one pop-up per tool, explaining what it does, what the demo shows, and how it would be built for real. */
 (()=>{
 const KEY="foyer-tour-offered";
 const STEPS=[
- {view:"email",target:"#nav",place:"right",title:"Nine tools, one workspace",body:"Everything an agent does lives in this sidebar: email, leads, client files, advertising, reports, rentals, maintenance, bookings and a page for each agent. Every tool has its own scripted AI moment."},
- {view:"email",target:"#run",title:"One press does the lot",body:"An enquiry arrives. The assistant reads it, searches past emails, finds the earlier conversation, updates the client file and drafts a reply for you to approve.",try:()=>F.$("#run").click(),tryLabel:"Run it now"},
- {view:"leads",target:"#scanBtn",title:"Leads, found for you",body:"The assistant scans your inbox, portal enquiries and past clients for buying and selling signals, then ranks who to call first.",try:()=>F.$("#scanBtn").click(),tryLabel:"Scan now"},
- {view:"clients",target:"#prepBtn",title:"Walk into every meeting prepared",body:"One press assembles the history, what has changed and the talking points, plus the listings worth bringing.",try:()=>F.$("#prepBtn").click(),tryLabel:"Prepare one now"},
- {view:"ads",target:"#adTabs",title:"Advertising, with the numbers",body:"The Performance tab shows daily views, enquiries and saves in the style of Domain and realestate.com.au, then recommends what to change. The figures are sample data.",try:()=>{F.$('#adTabs button[data-k="perf"]').click();setTimeout(()=>F.$("#analyse")&&F.$("#analyse").click(),500)},tryLabel:"Analyse now"},
- {view:"reports",target:"#rpBuild",title:"Reports owners actually read",body:"Vendors and landlords get a clear weekly or monthly report with the numbers, buyer feedback and a recommendation. You review it, then send.",try:()=>F.$("#rpBuild").click(),tryLabel:"Build one now"},
- {view:"maintenance",target:"#triage",title:"Repairs, triaged",body:"A tenant’s message becomes an urgency rating, a matched tradie and drafted messages. Watch what appears on Luca’s agent page afterwards.",try:()=>F.$("#triage").click(),tryLabel:"Triage it now"},
- {view:"bookings",target:"#bookBtn",title:"Open homes and inspections",body:"Every agent’s week in one view. The assistant picks a clash-free time and writes the invite.",try:()=>F.$("#bookBtn").click(),tryLabel:"Book one now"},
- {view:"agents",target:"#switch",title:"A page for every agent",body:"Each agent has their own tasks, open homes, clients and sales. Plan my day ranks the day by value.",try:()=>F.$("#planBtn").click(),tryLabel:"Plan a day now"},
- {view:"email",target:"#theme",place:"below",title:"Dark or light, your call",body:"That is the tour. Everything here is scripted on invented sample data, so nothing is read, saved or sent. Now try the email demo yourself."}
+ {view:"email",kicker:"Welcome",title:"A show-and-tell, not a live product",art:[11,"tower"],
+  what:"Foyer is a design and engineering concept for an AI workspace for luxury real estate agents. This tour takes the tools one at a time: what each does, what its demo shows, and how it would be built for real.",
+  demoT:"What you will see",demo:["Nine tools that share one invented world of agents, clients and properties","A scripted AI moment behind every button, started by you","Actions that carry across tools: a maintenance request creates a task on an agent’s page"],
+  buildT:"What is real, what is not",build:"Everything on screen is invented sample data and scripted animation. Nothing is read, searched, saved or sent.",chips:["Hand-built HTML, CSS, JS","No framework or back end","Generated artwork","GitHub Pages"]},
+ {view:"email",kicker:"AI Email",title:"AI Email",art:[11,"tower"],
+  what:"Reads each inbound email, works out who it is from and what they want, finds the earlier conversation, updates the client file and drafts a reply for the agent to approve.",
+  demo:["Open the Nguyen enquiry and press Run AI assistant","Watch it highlight the details, search 2,418 emails and match the August thread","See the client file change and a reply type out, with nothing sent"],
+  build:"I would give Claude read-only tools over the mailbox and CRM, have it extract structured fields with a citation to the source email, and require a person to approve every write or send.",chips:["Claude tool use","MCP mailbox and CRM tools","Structured extraction","Retrieval over past mail","Human approval gate"],
+  try:()=>F.$("#run").click(),tryLabel:"Run this demo"},
+ {view:"leads",kicker:"Leads",title:"Leads",art:[53,"house"],
+  what:"Scans email, portal enquiries, open-home sign-ins and past clients for buying and selling signals, then ranks who to call first and says why.",
+  demo:["Press Scan for leads","Watch the buying and selling phrases it picks out","See the ranking, and one clear next step for each lead"],
+  build:"A classifier reads each message and its history to score intent. Every score comes with the phrase that triggered it, so the agent can judge it, and accuracy is tested on labelled examples before anyone relies on it.",chips:["Intent classification","Evaluation set","Explainable scores","Portal and CRM feeds"],
+  try:()=>F.$("#scanBtn").click(),tryLabel:"Run this demo"},
+ {view:"clients",kicker:"Client files",title:"Client files",art:[41,"terrace"],
+  what:"Keeps every client file current from email and calls, and prepares a briefing before each meeting so the agent never walks in cold.",
+  demo:["Open a client and press Prepare my meeting","See the history, what changed and the talking points build up","Listings worth bringing, matched to their brief"],
+  build:"Updates are proposed as field-level changes with the source email attached, so the agent sees exactly what changed and why. Writes to the CRM go through the same approval step.",chips:["Field-level diffs","Source citations","CRM write-back","Audit log"],
+  try:()=>F.$("#prepBtn").click(),tryLabel:"Run this demo"},
+ {view:"ads",kicker:"AI Advertising",title:"AI Advertising",art:[23,"tower"],
+  what:"Drafts a campaign for each listing and, once connected, shows daily views, enquiries and saves from the property portals with a plain-English insight.",
+  demo:["Pick a listing and generate a campaign","Open Performance for 14 days of sample portal numbers","Press Analyse with AI for patterns and recommended next moves"],
+  build:"Portal numbers would come from each portal’s official listing-performance access for connected agencies. I have not yet verified exactly what each portal offers, so every figure here is labelled sample data.",chips:["Portal performance feeds (to verify)","Brand-safe copy rules","Approval before spend"],
+  try:()=>{F.$('#adTabs button[data-k="perf"]').click();setTimeout(()=>F.$("#analyse")&&F.$("#analyse").click(),500)},tryLabel:"Run this demo"},
+ {view:"reports",kicker:"Reports",title:"Reports",art:[37,"house"],
+  what:"Writes the weekly vendor report or monthly landlord report, so owners stay informed with real numbers, buyer feedback and a clear recommendation.",
+  demo:["Choose a listing or a rental","Press Build this week’s report","See the document update, marked as a draft for review"],
+  build:"Numbers come from data, never from the model. Claude writes only the narrative around them, and every figure in the text is checked against the data before the draft is shown.",chips:["Data first, narrative second","Number checks","PDF export","Review before sending"],
+  try:()=>F.$("#rpBuild").click(),tryLabel:"Run this demo"},
+ {view:"rentals",kicker:"Rentals",title:"Rentals",art:[83,"terrace"],
+  what:"Manages the rental portfolio and prepares lease renewals: it checks market rent, proposes a fair figure and drafts the letter for the landlord.",
+  demo:["Select the Merthyr Road lease and press Prepare the renewal","Watch comparable rents shape the proposal","See the letter and the status change to Renewal drafted"],
+  build:"Comparable rents come from market data. The proposal follows rules the landlord has agreed in advance, and Claude explains its reasoning in plain language.",chips:["Market rent data","Landlord rules","Lease and ledger extraction","Approval required"],
+  try:()=>F.$("#renew").click(),tryLabel:"Run this demo"},
+ {view:"maintenance",kicker:"Maintenance",title:"Maintenance",art:[67,"house"],
+  what:"Turns a tenant’s message into a prioritised job: an urgency rating, a matched tradie, drafted messages, and a task on the right agent’s page.",
+  demo:["Open No hot water and press Triage and book a tradie","See urgency judged and three tradies compared","Then open Luca’s agent page to find the new task"],
+  build:"Urgency follows written rules (safety first, then tenancy obligations) so it is predictable, with the model reading the message and explaining its call. Spend limits are set by the landlord.",chips:["Rule-based urgency","Tradie availability","Owner spend limits","Templated messages"],
+  try:()=>F.$("#triage").click(),tryLabel:"Run this demo"},
+ {view:"bookings",kicker:"Bookings",title:"Bookings",art:[71,"terrace"],
+  what:"Shows every agent’s week of open homes and inspections, and books new ones by finding a clash-free time and writing the invite.",
+  demo:["Press Book an inspection","Watch the slots checked and one chosen","See the new booking appear on Saturday"],
+  build:"Slot choice is a scheduling problem solved with plain code against real calendars. The model only handles the request and the wording of the invite.",chips:["Calendar integration","Constraint-based scheduling","Invites with approval"],
+  try:()=>F.$("#bookBtn").click(),tryLabel:"Run this demo"},
+ {view:"agents",kicker:"Agents",title:"A page for every agent",art:[53,"house"],
+  what:"Gives each agent their own page: tasks ranked by value, open homes, clients and recent sales, plus a plan for the day.",
+  demo:["Switch between four agents","Tick off a task and watch the count change","Press Plan my day for a ranked timetable"],
+  build:"The plan ranks tasks by expected value and deadline using CRM and calendar data, then proposes a timetable the agent can accept or change.",chips:["CRM and calendar data","Value-based ranking","Daily brief"],
+  try:()=>F.$("#planBtn").click(),tryLabel:"Run this demo"},
+ {view:"email",kicker:"That is the tour",title:"How I approach this kind of work",art:[11,"tower"],
+  what:"The dashboard is the visible part. The way of working behind it is what I would bring to your team.",
+  demoT:"What this shows",demo:["Find the real problem first: my earlier Discovery Copilot prototype does exactly that","Make every AI step visible and approvable, so people stay in control","Be honest about what is real: every figure here is labelled sample data"],
+  buildT:"See more",links:[["Source on GitHub","https://github.com/Ronan1111341/discovery-copilot"],["Earlier prototype: Discovery Copilot","discovery.html"]],final:true}
 ];
-let i=0,bg=null,spot=null,card=null,keyH=null,rz=null,token=0;
+let i=0,bg=null,wrap=null,card=null,keyH=null,lastFocus=null;
 const q=new URLSearchParams(location.search);
-const wait=ms=>new Promise(r=>setTimeout(r,ms));
-async function visible(sel,tries=14){for(let n=0;n<tries;n++){const e=F.$(sel);if(e){const r=e.getBoundingClientRect();if(r.width>0&&r.height>0&&getComputedStyle(e).visibility!=="hidden")return e}await wait(60)}return null}
-function place(r,place){
-  const cw=card.offsetWidth,ch=card.offsetHeight,vw=innerWidth,vh=innerHeight,g=18,narrow=vw<700;
-  let x,y;
-  if(!r){x=(vw-cw)/2;y=(vh-ch)/2}
-  else if(!narrow&&(place==="right"||place==="auto"||!place)&&r.right+g+cw<vw-12){x=r.right+g;y=r.top}
-  else if(r.bottom+g+ch<vh-12){x=r.left;y=r.bottom+g}
-  else if(r.top-g-ch>12){x=r.left;y=r.top-g-ch}
-  else if(!narrow&&r.left-g-cw>12){x=r.left-g-cw;y=r.top}
-  else{x=(vw-cw)/2;y=Math.max(12,vh-ch-16)}
-  card.style.left=Math.max(12,Math.min(x,vw-cw-12))+"px";card.style.top=Math.max(12,Math.min(y,vh-ch-12))+"px";
+const mark=()=>{try{sessionStorage.setItem(KEY,"1")}catch(e){}};
+const toolCount=STEPS.length-2;
+function art(s){const [seed,kind]=s.art;return propertyArt(seed,kind)}
+function fill(n,first){
+  const s=STEPS[n],isTool=n>0&&n<STEPS.length-1;
+  const body=F.$(".tbody",card),artEl=F.$("#tArt",card);
+  const html=`<div class="eyebrow num">${isTool?`Tool ${n} of ${toolCount} · `:""}${F.esc(s.kicker)}</div><h3 id="tTitle">${F.esc(s.title)}</h3><p class="what">${F.esc(s.what)}</p>
+   <div class="tcols"><div><h4>${F.esc(s.demoT||"In the demo")}</h4><ul>${s.demo.map(d=>`<li>${F.esc(d)}</li>`).join("")}</ul></div>
+   <div><h4>${F.esc(s.buildT||"How I’d build it")}</h4>${s.links?`<div class="tlinks">${s.links.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${F.esc(l[0])} →</a>`).join("")}</div>`:`<p>${F.esc(s.build)}</p><div class="tchips">${s.chips.map(c=>`<span>${F.esc(c)}</span>`).join("")}</div>`}</div></div>`;
+  const apply=()=>{
+    body.innerHTML=html;body.scrollTop=0;
+    artEl.innerHTML=`<div class="a">${art(s)}</div><span class="num2 num">${isTool?String(n).padStart(2,"0"):""}</span>`;
+    F.$(".tdots",card).innerHTML=STEPS.map((_,k)=>`<button type="button" class="${k<=n?"on":""} ${k===n?"cur":""}" data-k="${k}" aria-label="Go to step ${k+1}"></button>`).join("");
+    F.$$(".tdots button",card).forEach(b=>b.onclick=()=>go(+b.dataset.k));
+    const btns=F.$(".tbtns",card);
+    btns.innerHTML=`${s.try?`<button class="btn ghost sm" id="tTry" type="button">${F.esc(s.tryLabel||"Run this demo")}</button>`:""}${n?'<button class="btn ghost sm" id="tBack" type="button">Back</button>':""}<button class="btn sm" id="tNext" type="button">${n===STEPS.length-1?"Finish":n===0?"Start the tour":"Next"}</button>`;
+    F.$("#tNext").onclick=()=>n===STEPS.length-1?end():go(n+1);
+    const b=F.$("#tBack");if(b)b.onclick=()=>go(n-1);
+    const t=F.$("#tTry");if(t)t.onclick=()=>{end(true);setTimeout(s.try,500)};
+    F.$("#tNext").focus({preventScroll:true});
+    F.$("#live").textContent=`${s.kicker}: ${s.title}`;
+  };
+  if(first){apply();return}
+  body.classList.add("swap");setTimeout(()=>{apply();body.classList.remove("swap")},F.RM?0:180);
 }
-async function show(n){
-  const my=++token;i=n;const s=STEPS[n];
-  F.go(s.view);await wait(F.RM?60:420);if(my!==token)return;
-  const el=await visible(s.target);if(my!==token)return;
-  if(el){el.scrollIntoView({block:"center",inline:"nearest",behavior:"auto"});await wait(60)}
-  const r=el?el.getBoundingClientRect():null,pad=8;
-  if(r){Object.assign(spot.style,{opacity:1,top:r.top-pad+"px",left:r.left-pad+"px",width:r.width+pad*2+"px",height:r.height+pad*2+"px"})}else spot.style.opacity=0;
-  card.innerHTML=`<div class="eyebrow num">Step ${n+1} of ${STEPS.length}</div><h3>${F.esc(s.title)}</h3><p>${F.esc(s.body)}</p>
-   ${s.try?`<button class="btn ghost sm try" id="tTry" type="button">${F.esc(s.tryLabel||"Try it now")}</button>`:""}
-   <div class="dots" aria-hidden="true">${STEPS.map((_,k)=>`<i class="${k<=n?"on":""}"></i>`).join("")}</div>
-   <div class="btns"><button class="lnk" id="tSkip" type="button">${n===STEPS.length-1?"Close":"Skip tour"}</button><span class="sp"></span>${n?'<button class="btn ghost sm" id="tBack" type="button">Back</button>':""}<button class="btn sm" id="tNext" type="button">${n===STEPS.length-1?"Finish":"Next"}</button></div>`;
-  card.style.opacity=1;place(r,s.place);
-  F.$("#tNext").onclick=()=>n===STEPS.length-1?end():show(n+1);
-  const b=F.$("#tBack");if(b)b.onclick=()=>show(n-1);
-  F.$("#tSkip").onclick=end;
-  const t=F.$("#tTry");if(t)t.onclick=()=>{end();setTimeout(s.try,350)};
-  F.$("#tNext").focus({preventScroll:true});
-  F.$("#live").textContent=`Tour step ${n+1} of ${STEPS.length}: ${s.title}`;
-}
-function end(){
-  token++;mark();if(bg){bg.remove();bg=null}if(card){card.remove();card=null}
-  document.removeEventListener("keydown",keyH);removeEventListener("resize",rz);
+function go(n){i=n;F.go(STEPS[n].view);fill(n,false)}
+function end(keepView){
+  mark();if(bg){bg.remove();bg=null}if(wrap){wrap.remove();wrap=null}card=null;
+  document.removeEventListener("keydown",keyH);
+  if(!keepView&&STEPS[i].final)F.go("email");
   const m=F.$("#main");m&&m.focus({preventScroll:true});
 }
-const mark=()=>{try{sessionStorage.setItem(KEY,"1")}catch(e){}};
 F.tour={
   start(){
     if(bg)return;F.$(".tour-offer")?.remove();
-    const intro=F.$("#intro");if(intro&&F.intro)F.intro.end(true);
-    F.closeDrawer();
-    bg=document.createElement("div");bg.className="tour-bg";spot=document.createElement("div");spot.className="tour-spot";spot.style.opacity=0;
-    card=document.createElement("div");card.className="tour-card";card.setAttribute("role","dialog");card.setAttribute("aria-label","Product tour");card.style.opacity=0;
-    bg.append(spot);document.body.append(bg,card);
-    keyH=e=>{if(e.key==="Escape")end();else if(e.key==="ArrowRight"&&i<STEPS.length-1)show(i+1);else if(e.key==="ArrowLeft"&&i>0)show(i-1)};
-    document.addEventListener("keydown",keyH);rz=()=>show(i);addEventListener("resize",rz);
-    show(0);
+    if(F.$("#intro")&&F.intro)F.intro.end(true);
+    F.closeDrawer();i=0;F.go(STEPS[0].view);
+    bg=document.createElement("div");bg.className="tour-bg";bg.onclick=()=>end(true);
+    wrap=document.createElement("div");wrap.className="tour-wrap";
+    wrap.innerHTML=`<div class="tcard" role="dialog" aria-modal="true" aria-labelledby="tTitle"><div class="tart" id="tArt"></div><button class="tx" id="tClose" type="button" aria-label="Close the tour"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="tbody"></div><div class="tfoot"><div class="tdots"></div><div class="tbtns"></div></div></div>`;
+    document.body.append(bg,wrap);card=F.$(".tcard",wrap);
+    F.$("#tClose").onclick=()=>end(true);
+    keyH=e=>{
+      if(e.key==="Escape")end(true);
+      else if(e.key==="ArrowRight"&&i<STEPS.length-1)go(i+1);
+      else if(e.key==="ArrowLeft"&&i>0)go(i-1);
+      else if(e.key==="Tab"){const f=F.$$("button,a[href]",card).filter(x=>x.offsetParent!==null);if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}
+    };
+    document.addEventListener("keydown",keyH);fill(0,true);
   },
   offer(){
     if(q.get("tour")==="0"||F.$(".tour-offer")||bg)return;
     try{if(sessionStorage.getItem(KEY)==="1")return}catch(e){}
     const o=document.createElement("div");o.className="tour-offer";o.setAttribute("role","region");o.setAttribute("aria-label","Take the tour");
-    o.innerHTML=`<div class="eyebrow">New here?</div><h4>Take the 60-second tour</h4><p>A quick walk through each tool, with a shortcut to every demo.</p><div class="btns"><button class="btn sm" id="oGo" type="button">Start the tour</button><button class="btn ghost sm" id="oNo" type="button">Not now</button></div>`;
-    document.body.append(o);
-    F.$("#oGo").onclick=()=>F.tour.start();F.$("#oNo").onclick=()=>{mark();o.remove()};
+    o.innerHTML=`<div class="eyebrow">New here?</div><h4>Take the guided tour</h4><p>A short walk through each tool, one at a time: what it does, what the demo shows and how it would be built.</p><div class="btns"><button class="btn sm" id="oGo" type="button">Start the tour</button><button class="btn ghost sm" id="oNo" type="button">Not now</button></div>`;
+    document.body.append(o);F.$("#oGo").onclick=()=>F.tour.start();F.$("#oNo").onclick=()=>{mark();o.remove()};
   },
   init(){
     F.$("#tourBtn")?.addEventListener("click",()=>F.tour.start());
