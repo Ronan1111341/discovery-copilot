@@ -18,13 +18,13 @@ F.intro={
   init(){
     const q=new URLSearchParams(location.search);
     F.$("#replayIntro")?.addEventListener("click",()=>{const dlg=F.$("#dlg");dlg.classList.remove("on");dlg.close();F.intro.play()});
-    if(F.RM||q.get("intro")==="0"||seen())return;
+    if(F.RM||q.get("intro")==="0"||seen()){setTimeout(()=>F.tour&&F.tour.offer(),1400);return}
     F.intro.play();
   },
   end(fast){
     if(!el)return;tk++;mark();const e=el;el=null;
     if(keyH){document.removeEventListener("keydown",keyH);keyH=null}
-    e.classList.add("out");setTimeout(()=>{e.remove();const m=F.$("#main");m&&m.focus({preventScroll:true})},fast?350:800);
+    e.classList.add("out");setTimeout(()=>{e.remove();const m=F.$("#main");m&&m.focus({preventScroll:true});F.tour&&F.tour.offer()},fast?350:800);
   },
   async play(){
     if(F.RM||el)return;
