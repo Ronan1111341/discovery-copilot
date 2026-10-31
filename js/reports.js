@@ -16,7 +16,7 @@ function sheet(){
   if(kind==="vendor"){
     const p=W.prop(sub),s=seriesFor(sub),v=F.sum(s.domain)+F.sum(s.rea),enq=Math.round(v/38),insp=Math.round(enq/2.6),off=p.id==="p1"?1:p.id==="p5"?0:0;
     const feed=FEED[sub]||FEED.p1;
-    return `<div class="sheetdoc${fresh?" fresh":""}"><span class="draftmark">Draft · this week</span><div class="sh"><div><div class="eyebrow">Weekly vendor report</div><h3 style="margin-top:8px">${esc(p.addr)}</h3><p>${esc(p.sub)} · ${esc(p.price)}</p></div><div style="text-align:right"><p>Prepared by ${esc(W.agent(p.agent).name)}</p><p>${esc(W.agency)}</p></div></div>
+    return `<div class="sheetdoc${fresh?" fresh":""}"><div class="sh"><div><div class="eyebrow">Weekly vendor report</div><h3 style="margin-top:8px">${esc(p.addr)}</h3><p>${esc(p.sub)} · ${esc(p.price)}</p></div><div style="text-align:right"><span class="draftmark">Draft · this week</span><p>Prepared by ${esc(W.agent(p.agent).name)}</p><p>${esc(W.agency)}</p></div></div>
     <div class="art">${propertyArt(p.seed,p.art)}</div>
     <div class="kpis"><div class="${fresh?"changed":""}"><b class="num">${v.toLocaleString("en-AU")}</b><span>portal views, 14 days (sample)</span></div><div class="${fresh?"changed":""}"><b class="num">${enq}</b><span>enquiries</span></div><div class="${fresh?"changed":""}"><b class="num">${insp}</b><span>inspections</span></div><div class="${fresh?"changed":""}"><b class="num">${off}</b><span>offers</span></div></div>
     <h4>Daily views</h4>${F.chart(s,{h:190,light:true})}
@@ -24,7 +24,7 @@ function sheet(){
     <h4>Our recommendation</h4><p>${fresh?"Interest is strong and rising since the price guide moved. Hold the current guide through the weekend, lead with twilight photography, and invite everyone who saved the listing to Saturday’s open home. We will review again on Monday.":"Interest is steady. We recommend holding the guide this week and reviewing after the weekend’s open home."}</p></div>`;
   }
   const r=LL[sub];
-  return `<div class="sheetdoc${fresh?" fresh":""}"><span class="draftmark">Draft · this month</span><div class="sh"><div><div class="eyebrow">Monthly landlord report</div><h3 style="margin-top:8px">${esc(r.head)}</h3></div><div style="text-align:right"><p>Prepared by Luca Ferretti</p><p>${esc(W.agency)}</p></div></div>
+  return `<div class="sheetdoc${fresh?" fresh":""}"><div class="sh"><div><div class="eyebrow">Monthly landlord report</div><h3 style="margin-top:8px">${esc(r.head)}</h3></div><div style="text-align:right"><span class="draftmark">Draft · this month</span><p>Prepared by Luca Ferretti</p><p>${esc(W.agency)}</p></div></div>
    <div class="kpis">${r.kpis.map(k=>`<div class="${fresh?"changed":""}"><b class="num">${esc(k[0])}</b><span>${esc(k[1])}</span></div>`).join("")}</div>
    <h4>This month</h4><ul style="margin:0;padding-left:18px">${r.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul><h4>Our recommendation</h4><p>${esc(r.rec)}</p></div>`;
 }

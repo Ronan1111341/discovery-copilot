@@ -22,7 +22,7 @@ F.ICONS={
  report:'<path d="M5 20V4h10l4 4v12z"/><path d="M9 16v-3M12 16v-5M15 16v-2"/>'
 };
 let toastT;F.toast=m=>{const t=F.$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),3200)};
-F.pace=1;F.tourHost=null;F.reset={};
+F.pace=1;F.tourHost=null;F.reset={};F.turbo=new URLSearchParams(location.search).get("turbo")==="1";if(F.turbo)F.pace=.15;
 F.type=async(el,txt,ms,ok)=>{if(F.RM||ms<=0){el.textContent=txt;return}el.classList.add("caret");for(let i=1;i<=txt.length;i++){if(!ok()){el.classList.remove("caret");return}el.textContent=txt.slice(0,i);await F.sleep(ms)}el.classList.remove("caret")};
 F.count=(el,to,ms,ok,fmt=n=>Math.round(n).toLocaleString("en-AU"))=>new Promise(res=>{const t0=performance.now(),d=F.RM?0:ms;const f=now=>{if(!ok())return res();const p=d?Math.min(1,(now-t0)/d):1;el.textContent=fmt(p*to);p<1?requestAnimationFrame(f):res()};requestAnimationFrame(f)});
 F.hasDrawerFocus=()=>F.$("#drawer").classList.contains("open");
@@ -68,31 +68,46 @@ F.initChrome=()=>{
    Opens the right-hand drawer and runs each stage in turn: stages open and close as an accordion.
    Everything is scripted: nothing is read, searched, saved or sent. */
 F.openDrawer=()=>{F.$("#drawer").classList.add("open");F.$(".main").classList.add("dr")};
-F.closeDrawer=()=>{F.token++;F.$("#drawer").classList.remove("open");F.$(".main").classList.remove("dr");if(F.onDrawerClose){const f=F.onDrawerClose;F.onDrawerClose=null;f()}};
+F.closeDrawer=()=>{F.token++;const d=F.$("#drawer");d.classList.remove("open","centered");["left","top","width","height","right","bottom","transition"].forEach(p=>d.style[p]="");F.$(".main").classList.remove("dr");if(F.onDrawerClose){const f=F.onDrawerClose;F.onDrawerClose=null;f()}};
+const DT="left .8s cubic-bezier(.2,.7,.2,1),top .8s cubic-bezier(.2,.7,.2,1),width .8s cubic-bezier(.2,.7,.2,1),height .8s cubic-bezier(.2,.7,.2,1)";
+F.drawerCenter=()=>new Promise(res=>{
+  const d=F.$("#drawer"),r=d.getBoundingClientRect(),vw=innerWidth,vh=innerHeight;
+  d.style.transition="none";Object.assign(d.style,{left:r.left+"px",top:r.top+"px",width:r.width+"px",height:r.height+"px",right:"auto",bottom:"auto"});d.getBoundingClientRect();
+  const w=Math.min(800,vw-24),h=Math.min(vh-176,780),x=(vw-w)/2,y=Math.max(12,(vh-176-h)/2+16);
+  d.classList.add("centered");d.style.transition=DT;
+  requestAnimationFrame(()=>Object.assign(d.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}));
+  setTimeout(res,F.RM||F.turbo?0:820);
+});
+F.drawerDock=()=>new Promise(res=>{
+  const d=F.$("#drawer"),vw=innerWidth,m=vw<=900,w=m?vw:Math.min(460,vw),top=m?58:64,h=innerHeight-top-(m?64:0);
+  d.style.transition=DT;requestAnimationFrame(()=>Object.assign(d.style,{left:(vw-w)+"px",top:top+"px",width:w+"px",height:h+"px"}));
+  setTimeout(()=>{d.classList.remove("centered");["left","top","width","height","right","bottom","transition"].forEach(p=>d.style[p]="");res()},F.RM||F.turbo?0:820);
+});
 const setOpen=(st,open)=>{st.classList.toggle("open",open);st.querySelector("button").setAttribute("aria-expanded",String(open))};
 F.runDemo=async def=>{
-  const tk=++F.token,ok=()=>tk===F.token,live=F.$("#live"),th=F.tourHost,host=th?th.el:F.$("#drStages"),P=()=>F.pace;
-  if(!th)F.$("#drTitle").textContent=def.title;
+  const tk=++F.token,ok=()=>tk===F.token,live=F.$("#live"),th=F.tourHost,host=F.$("#drStages"),P=()=>F.pace;
+  F.$("#drTitle").textContent=def.title;
   host.innerHTML=def.stages.map((s,i)=>`<div class="stage" data-s="pending" data-i="${i}"><button type="button" aria-expanded="false"><span class="dot" aria-hidden="true"></span><span class="tt">${F.esc(s.title)}<span class="st">${F.esc(s.sub||"")}</span></span>${F.CHEV}</button><div class="sb"><div><div class="in">${th&&s.explain?`<div class="explain"><b>What’s happening</b>${F.esc(s.explain)}</div>`:""}${s.html||""}</div></div></div></div>`).join("")+(th?"":`<div class="done-note" id="drNote">${def.note||"<b>Done.</b> This was a scripted demo: nothing was searched, saved or sent."}</div>`);
   F.$$(".stage>button",host).forEach(b=>b.onclick=()=>{const st=b.parentElement;if(st.dataset.s==="pending")return;setOpen(st,!st.classList.contains("open"))});
   F.onDrawerClose=def.onClose||null;
-  if(!th)F.openDrawer();
+  F.openDrawer();
   const ctx={ok,sleep:ms=>F.sleep(ms*P()),type:(el,t,ms)=>F.type(el,t,ms*P(),ok),count:(el,to,ms,fmt)=>F.count(el,to,ms*P(),ok,fmt),RM:F.RM,get pace(){return P()}};
   const stages=F.$$(".stage",host);
-  await F.sleep(550*P());
+  if(th){await th.pre(def)}else await F.sleep(550*P());
   for(let i=0;i<stages.length;i++){
     if(!ok())return;
     if(i>0)setOpen(stages[i-1],false);
     stages[i].dataset.s="active";setOpen(stages[i],true);live.textContent=def.stages[i].title;await F.sleep(380*P());
     if(!ok())return;
+    if(th)await th.start(i,def);
+    if(!ok())return;
     if(def.stages[i].run)await def.stages[i].run(F.$(".in",stages[i]),ctx);
     if(!ok())return;
-    if(th&&!F.RM&&def.stages[i].explain){const hold=Math.max(900,def.stages[i].explain.length*14);for(let t=0;t<hold&&ok()&&F.pace>0;t+=100)await new Promise(r=>setTimeout(r,100))}
-    if(!ok())return;
     stages[i].dataset.s="done";F.$(".dot",stages[i]).textContent="✓";
+    if(th){await th.gate(i,def);if(!ok())return}
   }
   live.textContent="Done.";
   if(def.onDone)def.onDone();
-  if(th){th.finish&&th.finish(def)}else{F.$("#drNote").classList.add("on");F.$("#drStages").scrollTo({top:1e5,behavior:F.RM?"auto":"smooth"})}
+  if(th){await th.finish(def)}else{F.$("#drNote").classList.add("on");F.$("#drStages").scrollTo({top:1e5,behavior:F.RM?"auto":"smooth"})}
 };
 })();
