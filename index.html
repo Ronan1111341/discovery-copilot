@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Discovery Copilot</title>
-<meta name="description" content="Turn messy conversations with leasing, property management and sales teams into a clear AI plan: the real problem, a baseline, and how you'll prove it worked.">
+<meta name="theme-color" content="#eef1f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#09121c" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Turn messy conversations with leasing, property management and sales teams into a clear AI plan: the real problem, a baseline, and how you’ll prove it worked.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
@@ -39,6 +41,19 @@ p{margin:0}
 .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
 .mono{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:50;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:8px;text-decoration:none;transition:top .15s}
+.skip:focus{top:12px}
+button,.btn,.scen button,summary{touch-action:manipulation}
+section,.hero{scroll-margin-top:84px}
+.bar .fill,.delta,.kpilist b,.dim,.title-block .v,.impact .top{font-variant-numeric:tabular-nums}
+.heard{border-left:2px solid var(--accent);padding-left:14px}
+.heard p{font-size:16px;color:var(--ink-2);font-style:italic;min-height:3.2em}
+.hero-sheet .now{min-height:3.6em}.hero-sheet .was{min-height:1.5em}
+.caret::after{content:"";display:inline-block;width:2px;height:1em;background:var(--accent);margin-left:2px;vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.dim i{transform-origin:left;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.replay{align-self:flex-start;background:none;border:0;color:var(--accent);font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;padding:6px 0}
 .grid-bg{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-position:-1px -1px}
 
 /* nav */
@@ -210,6 +225,7 @@ footer a{color:var(--ink)}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to main content</a>
 
 <nav><div class="wrap">
   <a class="brand" href="#top" aria-label="Discovery Copilot home">
@@ -219,6 +235,7 @@ footer a{color:var(--ink)}
   <div class="links"><a href="#how">How it works</a><a href="#demo">Demo</a><a href="#security">Security</a><a href="#faq">FAQ</a><a class="btn sm" href="#demo">Try it</a></div>
 </div></nav>
 
+<main id="main">
 <header class="hero grid-bg" id="top"><div class="wrap">
   <div>
     <div class="eyebrow mono">For real estate teams adopting AI</div>
@@ -236,12 +253,14 @@ footer a{color:var(--ink)}
       <div><span class="k mono">Status</span><span class="v">For review</span></div>
     </div>
     <div class="sheet-body">
-      <div><span class="k mono" style="color:var(--warn)">The brief</span><p class="was">A chatbot so tenants stop emailing us.</p></div>
-      <div><span class="k mono" style="color:var(--good)">What is really going on</span><p class="now">Forty leases a week are re-typed by hand, and rent review dates live in one person's spreadsheet.</p></div>
+      <div class="heard"><span class="k mono">Heard in the room</span><p id="heardTxt">“We need a chatbot so tenants stop emailing us. We get 300 emails a week.”</p></div>
+      <div><span class="k mono" style="color:var(--warn)">The brief</span><p class="was" id="wasTxt">A chatbot so tenants stop emailing us.</p></div>
+      <div><span class="k mono" style="color:var(--good)">What is really going on</span><p class="now" id="nowTxt">Forty leases a week are re-typed by hand, and rent review dates live in one person’s spreadsheet.</p></div>
       <div>
         <div class="dim mono"><span>25 min</span><i></i><span>≤5 min</span></div>
         <p style="font-size:14px;color:var(--ink-2);margin-top:8px">Target time to process one lease, once extraction does the typing and a person reviews exceptions.</p>
       </div>
+      <button class="replay" id="replay" type="button">Replay ↺</button>
     </div>
   </div>
 </div></header>
@@ -274,13 +293,13 @@ footer a{color:var(--ink)}
       </div>
       <div class="panel">
         <h3>2 · What people said</h3>
-        <label for="notes" class="mono" style="display:none">Notes</label>
-        <textarea id="notes" placeholder="Paste interview notes, a transcript, or a messy brief…"></textarea>
+        <label for="notes" class="sr">Notes</label>
+        <textarea id="notes" name="notes" placeholder="Paste interview notes, a transcript, or a messy brief…"></textarea>
         <div class="runrow"><button class="btn" id="run" type="button">Run discovery <span aria-hidden="true">→</span></button><span id="status" role="status" aria-live="polite"></span></div>
         <details class="live" id="liveBox"><summary>Analyse your own notes with Claude</summary>
           <p>Paste an Anthropic API key. It stays in this browser tab and goes only to api.anthropic.com. Do not paste real client data into a demo.</p>
-          <label for="key" class="mono" style="display:none">API key</label>
-          <input id="key" type="password" placeholder="sk-ant-…" autocomplete="off">
+          <label for="key" class="sr">API key</label>
+          <input id="key" name="apikey" type="password" placeholder="sk-ant-…" autocomplete="off">
         </details>
       </div>
     </div>
@@ -316,7 +335,7 @@ footer a{color:var(--ink)}
   <div class="sec-head"><div class="mono">Security</div><h2>Built for the data real estate actually holds.</h2></div>
   <div class="sec-grid">
     <div><span class="mono">01</span><b>Keep data in region</b><p>Production design processes documents in an Australian AWS region, with no model training on your data.</p></div>
-    <div><span class="mono">02</span><b>Least privilege</b><p>Agents start read-only. Anything that writes to a system goes through a person's approval first.</p></div>
+    <div><span class="mono">02</span><b>Least privilege</b><p>Agents start read-only. Anything that writes to a system goes through a person’s approval first.</p></div>
     <div><span class="mono">03</span><b>Audit everything</b><p>Every extraction, suggestion and edit is logged, so any answer can be traced back to its source page.</p></div>
     <div><span class="mono">04</span><b>Measure honestly</b><p>Accuracy is tested on a labelled set before launch and re-checked on every change, then reported to the team.</p></div>
   </div>
@@ -327,12 +346,13 @@ footer a{color:var(--ink)}
   <div class="sec-head"><div class="mono">Questions</div><h2>Before you try it.</h2></div>
   <div class="faq">
     <details><summary>Are the numbers real?</summary><p>The three scenarios are fictional. Baselines come from the notes shown beside them, and every target is a proposal to be tested, not a result. In live mode the model is told to use only figures that appear in your notes.</p></details>
-    <details><summary>Does it store my notes?</summary><p>No. The page has no back end. In live mode your notes go from your browser straight to Anthropic's API using your own key. Please keep real client data out of a demo.</p></details>
+    <details><summary>Does it store my notes?</summary><p>No. The page has no back end. In live mode your notes go from your browser straight to Anthropic’s API using your own key. Please keep real client data out of a demo.</p></details>
     <details><summary>Why start with discovery instead of a chatbot?</summary><p>The request is rarely the problem. In the leasing sample, a tenant chatbot would have left forty hand-typed leases a week and a spreadsheet of critical dates untouched.</p></details>
     <details><summary>What would a real engagement look like?</summary><p>Sit beside the team, map the work, agree a baseline and a measure, build and ship one thing, train the people who use it, then check the numbers. This tool is the first step of that loop.</p></details>
   </div>
 </div></section>
 
+</main>
 <div class="band"><div class="wrap">
   <h2>Start with the conversation, not the model.</h2>
   <p>Pick a scenario, change the notes, and see how the plan changes.</p>
@@ -348,19 +368,19 @@ footer a{color:var(--ink)}
 const S={
 leasing:{label:"Leasing and lease admin",blurb:"Tenant emails, lease re-keying, missed dates",project:"Lease admin",dept:"Leasing",
 notes:`Leasing manager (Priya): "We need a chatbot so tenants stop emailing us. We get 300 emails a week."
-Admin (Tom): Most emails are "where's my lease copy", "can I get the rent ledger", "what does clause 14 say about pets". Also I re-key every new lease into the property system — 25 mins each, ~40 a week. Lease PDFs arrive by email in different formats, some scanned. Errors in rent review dates have cost us before.
+Admin (Tom): Most emails are "where’s my lease copy", "can I get the rent ledger", "what does clause 14 say about pets". Also I re-key every new lease into the property system — 25 mins each, ~40 a week. Lease PDFs arrive by email in different formats, some scanned. Errors in rent review dates have cost us before.
 Priya: Honestly the bigger worry is missed rent reviews and option dates — they live in a spreadsheet only Tom understands.`,
 out:{stated:"A tenant-facing chatbot to cut inbound email volume.",
-real:"Most emails are simple lookups. The costly problems are forty leases a week typed in by hand, and critical dates kept in one person's spreadsheet.",
+real:"Most emails are simple lookups. The costly problems are forty leases a week typed in by hand, and critical dates kept in one person’s spreadsheet.",
 steps:[["Lease PDF arrives by email in mixed formats, some scanned",0],["Tom re-keys terms into the property system, about 25 minutes each",0],["Critical dates copied into a private spreadsheet",0],["Tenants email for copies, ledgers and clause answers",0],["Staff reply by searching PDFs",0]],
 impact:[{label:"Time to process one lease",before:25,after:5,unit:"min"},{label:"Admin hours per week on leases",before:17,after:3,unit:"h"}],
 kpis:[["Missed critical dates","Track incidents; target zero"],["Extraction accuracy on key fields","≥98% on a 100-lease test set"]],
 opps:[["Intelligent document processing","Extract parties, term, rent and review or option dates from any lease format, with a citation to the source page. A person approves exceptions only."],["Critical-dates service","Write extracted dates to a shared system with automatic alerts, replacing the spreadsheet and the key-person risk."],["Grounded tenant assistant","Only once the data is clean: answer lookups from the record and hand clause interpretation to a person."]],
 flow:["Email intake","Claude extraction","Review queue","Property system","Dates and alerts"],
 build:"Claude on AWS Bedrock extracts fields with page citations in a Step Functions pipeline. Low-confidence fields go to a React review queue; approved data is written to the property system and a dates table with alerts. An MCP server exposes the same data to the later tenant assistant.",
-sec:["Leases hold personal and commercial data. Process in an Australian region, restrict access by role, keep an audit log of every extraction and edit, and never train on customer data.","Run Tom's process in parallel for four weeks so he moves from typing to reviewing. Train the team on exceptions and publish accuracy weekly."]}},
+sec:["Leases hold personal and commercial data. Process in an Australian region, restrict access by role, keep an audit log of every extraction and edit, and never train on customer data.","Run Tom’s process in parallel for four weeks so he moves from typing to reviewing. Train the team on exceptions and publish accuracy weekly."]}},
 arrears:{label:"Property management arrears",blurb:"Letters, three systems, late visibility",project:"Arrears follow-up",dept:"Property management",
-notes:`Property manager (Dani): "Can AI write the arrears letters faster? That's where my day goes."
+notes:`Property manager (Dani): "Can AI write the arrears letters faster? That’s where my day goes."
 Shadowing Dani for a morning: she opens the ledger, checks if a payment plan exists in an email thread, checks notes in the CRM, then writes the letter. 70% of time is gathering context across 3 systems; the letter itself takes 3 minutes. She manages 180 properties. Tone matters — some tenants are in hardship.
 Team lead: Arrears over 14 days have doubled; we find out late because reports run monthly.`,
 out:{stated:"Faster AI-written arrears letters.",
@@ -370,20 +390,20 @@ impact:[{label:"Time per arrears case",before:10,after:4,unit:"min"},{label:"Day
 kpis:[["Arrears over 14 days","Stop the doubling; target a 30% fall in 90 days"],["Hardship cases routed correctly","Reviewed weekly by the team lead"]],
 opps:[["Daily arrears triage agent","Assemble ledger, plan status and notes into one case summary per tenant, ranked by risk, every morning."],["Draft and approve","Propose the next step (reminder, plan check, hardship referral) with a tone-aware draft. The manager approves before anything is sent."],["Reusable MCP tools","Read-only tools over the ledger, CRM and mailbox that other teams can use later."]],
 flow:["Ledger","CRM","Mailbox","Claude agent","Manager approval"],
-build:"A scheduled Python agent calls read-only MCP tools over the ledger, CRM and mailbox, then ranks cases and prepares summaries each morning. Drafts wait for approval, and each suggestion is logged against the manager's decision for weekly review.",
-sec:["Start read-only; writes only through human approval. Hardship cases always go to a person. Mask personal data in logs.","Co-design the summary with Dani. Review the agent's suggestions against her decisions each week to build trust and tune the rules."]}},
+build:"A scheduled Python agent calls read-only MCP tools over the ledger, CRM and mailbox, then ranks cases and prepares summaries each morning. Drafts wait for approval, and each suggestion is logged against the manager’s decision for weekly review.",
+sec:["Start read-only; writes only through human approval. Hardship cases always go to a person. Mask personal data in logs.","Co-design the summary with Dani. Review the agent’s suggestions against her decisions each week to build trust and tune the rules."]}},
 sales:{label:"Sales contracts and settlement",blurb:"Contract checks, special conditions, status",project:"Contract review",dept:"Sales",
 notes:`Sales admin (Marcus): "Contracts of sale come back from solicitors and I check them against our checklist by hand — special conditions, deposit, cooling-off, finance dates."
-It takes 40 minutes a contract, 15 contracts a week at peak. Sometimes a special condition gets missed and the agent finds out at settlement. Agents keep asking "what's the status of X?" and Marcus answers from memory.
-GM: We want a dashboard of every deal's status.`,
+It takes 40 minutes a contract, 15 contracts a week at peak. Sometimes a special condition gets missed and the agent finds out at settlement. Agents keep asking "what’s the status of X?" and Marcus answers from memory.
+GM: We want a dashboard of every deal’s status.`,
 out:{stated:"A dashboard showing the status of every deal.",
-real:"A dashboard would show stale data, because status lives in Marcus's head and inbox. The gap is contract review quality and a status trail that updates itself.",
+real:"A dashboard would show stale data, because status lives in Marcus’s head and inbox. The gap is contract review quality and a status trail that updates itself.",
 steps:[["Contract returns from the solicitor by email",0],["Marcus checks it against the checklist, about 40 minutes",0],["Special conditions and key dates noted by hand",0],["Agents ask for status; Marcus answers from memory",0],["A missed condition surfaces at settlement",0]],
 impact:[{label:"Review time per contract",before:40,after:10,unit:"min"},{label:"Review hours per week at peak",before:10,after:2.5,unit:"h"}],
 kpis:[["Missed special conditions","Count at settlement; target zero"],["Reviewer agreement with AI flags","Track precision and recall monthly"]],
 opps:[["Contract review assistant","Flag special conditions, deposit, finance and cooling-off dates against the checklist, with page citations. Marcus confirms."],["Event-driven status","Update deal status from document and email events so the dashboard stays true without manual entry."],["Agent self-serve answers","Agents ask where a property stands and get a sourced answer."]],
 flow:["Contract email","Claude checklist","Review screen","Status table","Agent Q&A"],
-build:"Claude on AWS Bedrock fills a checklist-driven schema with page citations. A review screen shows flags beside the contract, document and email events update a deal-status table, and an MCP tool answers agents' questions from that table. Quality is tracked against Marcus's past reviews.",
+build:"Claude on AWS Bedrock fills a checklist-driven schema with page citations. A review screen shows flags beside the contract, document and email events update a deal-status table, and an MCP tool answers agents' questions from that table. Quality is tracked against Marcus’s past reviews.",
 sec:["Contracts are sensitive: keep data in an approved region, use role-based access and a full audit trail. The assistant flags and cites; it never gives legal advice.","Marcus keeps final sign-off. Run side by side for three weeks and share the catch and miss rates openly."]}}
 };
 
@@ -417,7 +437,7 @@ function show(o,project,dept,src){
   $("plan").innerHTML=o.steps.map((s,i)=>`<div class="row ${s[1]?"ok":"pain"}"><div class="node">${String(i+1).padStart(2,"0")}</div><div class="txt">${esc(s[0])}</div><span class="tag">${s[1]?"Works":"Pain point"}</span></div>`).join("");
   $("impact").innerHTML=impactHTML(o);
   $("phases").innerHTML=o.opps.map((p,i)=>`<div class="phase"><span class="mono">Phase ${i+1}</span><b>${esc(p[0])}</b><p>${esc(p[1])}</p></div>`).join("");
-  $("flow").innerHTML=(Array.isArray(o.flow)&&o.flow.length?o.flow:[]).map(x=>`<span>${esc(x)}</span>`).join("<i>→</i>");
+  $("flow").innerHTML=(Array.isArray(o.flow)&&o.flow.length?o.flow:[]).map(x=>`<span>${esc(x)}</span>`).join('<i aria-hidden="true">→</i>');
   $("build").textContent=o.build||"";
   $("secA").textContent=o.sec[0];$("secB").textContent=o.sec[1];
   requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll("#impact .fill").forEach(f=>f.style.width=f.dataset.w+"%")));
@@ -460,12 +480,27 @@ $("run").onclick=async()=>{
     const j=await r.json();if(!r.ok)throw new Error(j.error?.message||("HTTP "+r.status));
     const t=j.content.map(c=>c.text||"").join("");
     const o=JSON.parse(t.slice(t.indexOf("{"),t.lastIndexOf("}")+1));
-    if(!valid(o))throw new Error("Claude's reply was not in the expected shape. Run it again.");
+    if(!valid(o))throw new Error("Claude’s reply was not in the expected shape. Run it again.");
     stop();stopLoad();show(o,o.project||"Custom project",o.dept||"Your team","Live · Claude");setS("Live result from Claude.","ok");
     $("sheet").scrollIntoView({behavior:"smooth",block:"start"});
   }catch(e){stop();stopLoad();setS("Could not run: "+(e.name=="AbortError"?"the request timed out. Try again.":e.message),"err")}
   btn.disabled=false};
 
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let heroRun=0;
+async function typeInto(el,txt,ms){el.classList.add("caret");for(let i=1;i<=txt.length;i++){el.textContent=txt.slice(0,i);await sleep(ms)}el.classList.remove("caret")}
+async function heroPlay(){
+  const id=++heroRun,hT=$("heardTxt"),wT=$("wasTxt"),nT=$("nowTxt"),line=document.querySelector(".hero-sheet .dim i");
+  const H=hT.dataset.full||(hT.dataset.full=hT.textContent),W=wT.dataset.full||(wT.dataset.full=wT.textContent),N=nT.dataset.full||(nT.dataset.full=nT.textContent);
+  hT.textContent="";wT.style.opacity=0;nT.textContent="";line.style.transform="scaleX(0)";
+  await typeInto(hT,H,22);if(id!=heroRun)return;
+  await sleep(350);wT.style.transition="opacity .5s";wT.style.opacity=1;await sleep(900);if(id!=heroRun)return;
+  await typeInto(nT,N,16);if(id!=heroRun)return;
+  line.style.transform="scaleX(1)";
+}
+function heroStatic(){heroRun++;const h=$("heardTxt"),w=$("wasTxt"),n=$("nowTxt");[h,w,n].forEach(e=>{if(e.dataset.full)e.textContent=e.dataset.full;e.classList.remove("caret")});w.style.opacity=1;document.querySelector(".hero-sheet .dim i").style.transform="scaleX(1)"}
+$("replay").onclick=()=>{if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;heroPlay()};
+if(!matchMedia("(prefers-reduced-motion: reduce)").matches)heroPlay();
 pick("leasing");show(S.leasing.out,S.leasing.project,S.leasing.dept,"Sample");
 </script>
 </body>
